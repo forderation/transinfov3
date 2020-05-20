@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#464545"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/splash_root"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.SplashActivity">
+    <ImageView
+        android:id="@+id/image"
+        android:src="@drawable/dishub"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        />
+    <TextView
+        android:id="@+id/text"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:text="@string/app_name"
+        android:textStyle="bold"
+        android:layout_below="@id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ProgressBar
+        android:id="@+id/pgbar"
+        android:layout_below="@id/text"
+        android:layout_centerHorizontal="true"
+        android:padding="6dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp" />
+    <TextView
+        android:id="@+id/dishub"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="@string/dinas_perhubungan"
+        android:textSize="16sp"
+        android:layout_below="@id/pgbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textColor="@color/colorPrimary"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:text="@string/kabupaten_pasuruan"
+        android:layout_below="@id/dishub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

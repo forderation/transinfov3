@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="vertical"
+        tools:context=".activity.RegisterActivity">
+
+        <TextView
+            android:text="Pendaftaran Akun"
+            android:layout_margin="8dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <EditText
+            android:id="@+id/edt_username"
+            android:layout_margin="8dp"
+            android:hint="Nama Lengkap"
+            android:inputType="textPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <EditText
+            android:id="@+id/edt_email"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:hint="Email"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            />
+
+        <EditText
+            android:id="@+id/edt_contact"
+            android:layout_margin="8dp"
+            android:hint="Nomor Telepon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            />
+
+        <EditText
+            android:id="@+id/edt_address"
+            android:layout_margin="8dp"
+            android:hint="Alamat Lengkap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <EditText
+            android:id="@+id/edt_password"
+            android:layout_margin="8dp"
+            android:hint="Kata Sandi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            />
+
+        <EditText
+            android:id="@+id/edt_password_confirm"
+            android:layout_margin="8dp"
+            android:hint="Konfirmasi Kata Sandi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_ktp"
+            android:padding="10dp"
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:text="@string/pilih_foto_ktp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_daftar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:padding="4dp"
+            android:layout_gravity="right"
+            android:text="Daftar"/>
+    </LinearLayout>
+</ScrollView>
