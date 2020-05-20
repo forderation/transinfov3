@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.dishub.kabpasuruan.transinfo.activity.AccountActivity
 import com.dishub.kabpasuruan.transinfo.BuildConfig
 import com.dishub.kabpasuruan.transinfo.R
 import com.dishub.kabpasuruan.transinfo.api.ApiClient
@@ -14,6 +13,7 @@ import com.dishub.kabpasuruan.transinfo.model.OptionsResponse
 import com.dishub.kabpasuruan.transinfo.model.slide.ListSlide
 import com.dishub.kabpasuruan.transinfo.model.slide.Slide
 import com.dishub.kabpasuruan.transinfo.utils.SupportUtil
+import com.google.android.material.snackbar.Snackbar
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.squareup.picasso.Picasso
@@ -41,13 +41,13 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
             Context.MODE_PRIVATE
         )
         loggedIn = preferences!!.getBoolean(SupportUtil.spIsLoggedIn, false)
-
         live_cctv_cv.setOnClickListener(this)
         tempat_parkir_cv.setOnClickListener(this)
         si_angsa_cv.setOnClickListener(this)
         medsos_cv.setOnClickListener(this)
         link_web_cv.setOnClickListener(this)
         link_perizinan_cv.setOnClickListener(this)
+        angkutan_cv.setOnClickListener(this)
         uji_kir_cv.setOnClickListener(this)
         akun_cv.setOnClickListener(this)
         telepon_penting.setOnClickListener(this)
@@ -130,6 +130,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(p0: View?) {
         when (p0) {
+            angkutan_cv -> {
+                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
+            }
             pengaduan_cv -> {
                 startActivity(Intent(this, PengaduanActivity::class.java))
             }
@@ -153,7 +156,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             akun_cv -> {
-                startActivity(Intent(this, AccountActivity::class.java))
+                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
+//                startActivity(Intent(this, AccountActivity::class.java))
             }
             uji_kir_cv -> {
                 val intent = packageManager.getLaunchIntentForPackage(SupportUtil.ujiKirPackage)
@@ -178,10 +182,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     startActivity(Intent(this, KesehatanActivity::class.java))
                 }
-
             }
             daerah_rawan_cv -> {
-                startActivity(Intent(this, DaerahRawanActivity::class.java))
+                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
+//                startActivity(Intent(this, DaerahRawanActivity::class.java))
             }
             medsos_cv -> {
                 startActivity(Intent(this, MedsosActivity::class.java))
@@ -198,7 +202,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             tempat_parkir_cv -> {
-                startActivity(Intent(this, ParkingActivity::class.java))
+                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
+//                startActivity(Intent(this, ParkingActivity::class.java))
             }
             link_perizinan_cv -> {
                 startActivity(Intent(this, PerizinanActivity::class.java))
