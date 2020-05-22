@@ -8,6 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="LayoutGrid" parent="CardView.Light">
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:clickable">true</item>
+    </style>
     <style name="CardViewList" parent="CardView.Light">
         <item name="android:layout_margin">8dp</item>
         <item name="android:layout_width">wrap_content</item>
@@ -15,11 +22,15 @@
         <item name="android:clickable">true</item>
     </style>
 
-    <style name="CardViewListRight" parent="CardViewList">
+    <style name="CardViewList2" parent="CardViewList">
+        <item name="android:layout_column">2</item>
+    </style>
+
+    <style name="CardViewList1" parent="CardViewList">
         <item name="android:layout_column">1</item>
     </style>
 
-    <style name="CardViewListLeft" parent="CardViewList">
+    <style name="CardViewList0" parent="CardViewList">
         <item name="android:layout_column">0</item>
     </style>
 

@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.dishub.kabpasuruan.transinfo.BuildConfig
@@ -28,10 +31,26 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private var loggedIn = false
     private var isPhoneAuth = 0
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.home_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.account_menu -> {
+                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        supportActionBar?.title = getString(R.string.app_name)
+        supportActionBar?.title = "Dinas Perhubungan TransInfo"
         lifecycle.addObserver(youtube_player_view)
         carouselView.visibility = View.GONE
         youtube_player_view.visibility = View.GONE
@@ -47,9 +66,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         medsos_cv.setOnClickListener(this)
         link_web_cv.setOnClickListener(this)
         link_perizinan_cv.setOnClickListener(this)
-        angkutan_cv.setOnClickListener(this)
         uji_kir_cv.setOnClickListener(this)
-        akun_cv.setOnClickListener(this)
         telepon_penting.setOnClickListener(this)
         tempat_wisata_cv.setOnClickListener(this)
         daerah_rawan_cv.setOnClickListener(this)
@@ -130,9 +147,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(p0: View?) {
         when (p0) {
-            angkutan_cv -> {
-                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
-            }
             pengaduan_cv -> {
                 startActivity(Intent(this, PengaduanActivity::class.java))
             }
@@ -154,10 +168,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     startActivity(intent)
                 }
-            }
-            akun_cv -> {
-                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
-//                startActivity(Intent(this, AccountActivity::class.java))
             }
             uji_kir_cv -> {
                 val intent = packageManager.getLaunchIntentForPackage(SupportUtil.ujiKirPackage)
