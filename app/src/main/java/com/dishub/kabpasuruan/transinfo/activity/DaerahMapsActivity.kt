@@ -12,7 +12,6 @@ import com.dishub.kabpasuruan.transinfo.BuildConfig
 import com.dishub.kabpasuruan.transinfo.R
 import com.dishub.kabpasuruan.transinfo.api.ApiClient
 import com.dishub.kabpasuruan.transinfo.model.daerahRawan.ListRawan
-import com.dishub.kabpasuruan.transinfo.model.rawanBanjir.ListBanjir
 import com.dishub.kabpasuruan.transinfo.utils.SupportUtil
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -101,16 +100,16 @@ class DaerahMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun getRawanBanjir() {
         val retrofit = ApiClient().getApiClient(BuildConfig.BASE_API)
         val listRawan = retrofit.getRawanBanjir()
-        listRawan.enqueue(object : Callback<ListBanjir> {
-            override fun onFailure(call: Call<ListBanjir>, t: Throwable) {
+        listRawan.enqueue(object : Callback<ListRawan> {
+            override fun onFailure(call: Call<ListRawan>, t: Throwable) {
                 Toast.makeText(this@DaerahMapsActivity, "Koneksi error", Toast.LENGTH_SHORT)
                     .show()
             }
 
-            override fun onResponse(call: Call<ListBanjir>, response: Response<ListBanjir>) {
-                val listOfRawan = response.body() as ListBanjir
+            override fun onResponse(call: Call<ListRawan>, response: Response<ListRawan>) {
+                val listOfRawan = response.body() as ListRawan
                 listOfRawan.result.forEach {
-                    val title = "${it.nama}\nDesa:${it.desa}\nKecamatan:${it.kec}\nStatus Jalan:${it.status}"
+                    val title = "${it.nama}:${it.desa}:${it.kecamatan}:${it.status}"
                     mMap.addMarker(
                         MarkerOptions().icon(
                             BitmapDescriptorFactory.defaultMarker(
@@ -124,7 +123,7 @@ class DaerahMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun getRawanLaka() {
-        val retrofit = ApiClient().getApiClient(SupportUtil.dishubLink)
+        val retrofit = ApiClient().getApiClient(BuildConfig.BASE_API)
         val listRawan = retrofit.getRawanLaka()
         listRawan.enqueue(object: Callback<ListRawan> {
             override fun onFailure(call: Call<ListRawan>, t: Throwable) {
@@ -135,14 +134,13 @@ class DaerahMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             override fun onResponse(call: Call<ListRawan>, response: Response<ListRawan>) {
                 val listOfRawan = response.body() as ListRawan
                 listOfRawan.result.forEach {
-                    val title = "${it.nama}\nDesa:${it.desa}\n" +
-                            "Kecamatan:${it.kec}\nStatus Jalan:${it.status}"
+                    val title = "${it.nama}:${it.desa}:${it.kecamatan}:${it.status}"
                     mMap.addMarker(
                         MarkerOptions().icon(
                             BitmapDescriptorFactory.defaultMarker(
                                 BitmapDescriptorFactory.HUE_RED
                             )
-                        ).position(LatLng(it.latitude.toDouble(), it.longitude.toDouble())).title(title)
+                        ).position(LatLng(it.latitude, it.longitude)).title(title)
                     )
                 }
             }
@@ -150,7 +148,7 @@ class DaerahMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     private fun getRawanMacet() {
-        val retrofit = ApiClient().getApiClient(SupportUtil.dishubLink)
+        val retrofit = ApiClient().getApiClient(BuildConfig.BASE_API)
         val listRawan = retrofit.getRawanMacet()
         listRawan.enqueue(object : Callback<ListRawan> {
             override fun onFailure(call: Call<ListRawan>, t: Throwable) {
@@ -161,14 +159,13 @@ class DaerahMapsActivity : AppCompatActivity(), OnMapReadyCallback,
             override fun onResponse(call: Call<ListRawan>, response: Response<ListRawan>) {
                 val listOfRawan = response.body() as ListRawan
                 listOfRawan.result.forEach {
-                    val title = "${it.nama}\nDesa:${it.desa}\n" +
-                            "Kecamatan:${it.kec}\nStatus Jalan:${it.status}"
+                    val title = "${it.nama}:${it.desa}:${it.kecamatan}:${it.status}"
                     mMap.addMarker(
                         MarkerOptions().icon(
                             BitmapDescriptorFactory.defaultMarker(
                                 BitmapDescriptorFactory.HUE_RED
                             )
-                        ).position(LatLng(it.latitude.toDouble(), it.longitude.toDouble())).title(title)
+                        ).position(LatLng(it.latitude, it.longitude)).title(title)
                     )
                 }
             }
@@ -181,7 +178,7 @@ class DaerahMapsActivity : AppCompatActivity(), OnMapReadyCallback,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
         getCurrentLocation()
     }
 
@@ -230,21 +227,29 @@ class DaerahMapsActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-        if (p0 != null) {
-            val dialog = AlertDialog.Builder(this)
-            val dialogView = layoutInflater.inflate(R.layout.maps_pop_up, null)
-            dialog.setView(dialogView)
-            dialog.setCancelable(true)
-            dialog.setIcon(R.mipmap.ic_launcher)
-            dialog.setTitle("Detail Daerah")
-            val descMaps = dialogView.findViewById<TextView>(R.id.desc_maps)
-            val descText = "Nama Jalan:${p0.title}"
-            descMaps.text = descText
-            dialog.setPositiveButton("Tutup") { d, _ ->
-                d.dismiss()
+        if (p0 != null ) {
+            if(p0.title != "Lokasi Anda"){
+                val dialog = AlertDialog.Builder(this)
+                val dialogView = layoutInflater.inflate(R.layout.maps_pop_up, null)
+                dialog.setView(dialogView)
+                dialog.setCancelable(true)
+                dialog.setIcon(R.mipmap.ic_launcher)
+                dialog.setTitle("Detail Daerah")
+                val listString = p0.title.split(":")
+                val namaJalan = dialogView.findViewById<TextView>(R.id.popup_nama_jalan)
+                val desa = dialogView.findViewById<TextView>(R.id.popup_desa)
+                val kecamatan = dialogView.findViewById<TextView>(R.id.popup_kecamatan)
+                val statusJalan = dialogView.findViewById<TextView>(R.id.popup_status_jalan)
+                namaJalan.text = listString[0]
+                desa.text = listString[1]
+                kecamatan.text = listString[2]
+                statusJalan.text = listString[3]
+                dialog.setPositiveButton("Tutup") { d, _ ->
+                    d.dismiss()
+                }
+                dialog.show()
+                return true
             }
-            dialog.show()
-            return true
         }
         return false
     }

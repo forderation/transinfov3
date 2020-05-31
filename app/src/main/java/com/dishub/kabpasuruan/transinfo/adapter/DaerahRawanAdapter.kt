@@ -23,7 +23,7 @@ class DaerahRawanAdapter (
                 listener(rawan)
             }
             nama.text = rawan.nama
-            kec.text = rawan.kec
+            kec.text = rawan.kecamatan
             desa.text = rawan.desa
             status.text = rawan.status
         }

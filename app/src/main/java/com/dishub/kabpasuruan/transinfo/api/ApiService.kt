@@ -9,7 +9,6 @@ import com.dishub.kabpasuruan.transinfo.model.kesehatan.ListKesehatan
 import com.dishub.kabpasuruan.transinfo.model.linkWeb.ListWeb
 import com.dishub.kabpasuruan.transinfo.model.parking.ListPark
 import com.dishub.kabpasuruan.transinfo.model.perizinan.ListIzin
-import com.dishub.kabpasuruan.transinfo.model.rawanBanjir.ListBanjir
 import com.dishub.kabpasuruan.transinfo.model.slide.ListSlide
 import com.dishub.kabpasuruan.transinfo.model.tempatWisata.ListWisata
 import okhttp3.MultipartBody
@@ -36,8 +35,8 @@ interface ApiService {
     @GET("api/jl_alternatif")
     fun getJlAlternate(): Call<ListAlternate>
 
-    @GET("api/rawan_banjir")
-    fun getRawanBanjir(): Call<ListBanjir>
+    @GET("api/banjir")
+    fun getRawanBanjir(): Call<ListRawan>
 
     @GET("api/puskesmas_call")
     fun getKesehatan(): Call<ListKesehatan>
@@ -110,9 +109,9 @@ interface ApiService {
     @GET("slide.php")
     fun getSlide(): Call<ListSlide>
 
-    @GET("edishub/rawan_macet.php")
+    @GET("api/macet")
     fun getRawanMacet(): Call<ListRawan>
 
-    @GET("edishub/rawanlaka.php")
+    @GET("api/laka")
     fun getRawanLaka(): Call<ListRawan>
 }

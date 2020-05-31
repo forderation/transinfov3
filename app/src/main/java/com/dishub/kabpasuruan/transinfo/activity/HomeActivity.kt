@@ -40,7 +40,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.account_menu -> {
-                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
+                startActivity(Intent(this, AccountActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -194,8 +194,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             daerah_rawan_cv -> {
-                Snackbar.make(root_home,"Coming Soon", Snackbar.LENGTH_SHORT).show()
-//                startActivity(Intent(this, DaerahRawanActivity::class.java))
+                startActivity(Intent(this, DaerahRawanActivity::class.java))
             }
             medsos_cv -> {
                 startActivity(Intent(this, MedsosActivity::class.java))

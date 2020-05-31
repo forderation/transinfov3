@@ -17,8 +17,6 @@ import com.dishub.kabpasuruan.transinfo.model.daerahRawan.ListRawan
 import com.dishub.kabpasuruan.transinfo.model.daerahRawan.Rawan
 import com.dishub.kabpasuruan.transinfo.model.jalanAlternate.Alternate
 import com.dishub.kabpasuruan.transinfo.model.jalanAlternate.ListAlternate
-import com.dishub.kabpasuruan.transinfo.model.rawanBanjir.Banjir
-import com.dishub.kabpasuruan.transinfo.model.rawanBanjir.ListBanjir
 import com.dishub.kabpasuruan.transinfo.utils.SupportUtil
 import retrofit2.Call
 import retrofit2.Callback
@@ -95,8 +93,8 @@ class ListRawanActivity : AppCompatActivity() {
     private fun getRawanBanjir() {
         val retrofit = ApiClient().getApiClient(BuildConfig.BASE_API)
         val rawanList= retrofit.getRawanBanjir()
-        rawanList.enqueue(object: Callback<ListBanjir>{
-            override fun onFailure(call: Call<ListBanjir>, t: Throwable) {
+        rawanList.enqueue(object: Callback<ListRawan>{
+            override fun onFailure(call: Call<ListRawan>, t: Throwable) {
                 Toast.makeText(
                     this@ListRawanActivity,
                     "Error can't get response ${t.message}",
@@ -104,11 +102,11 @@ class ListRawanActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onResponse(call: Call<ListBanjir>, response: Response<ListBanjir>) {
+            override fun onResponse(call: Call<ListRawan>, response: Response<ListRawan>) {
                 if(response.code() == 200){
-                    val resultList = response.body()?.result as List<Banjir>
+                    val resultList = response.body()?.result
                     rv_rawan.layoutManager = LinearLayoutManager(this@ListRawanActivity)
-                    rv_rawan.adapter = RawanBanjirAdapter(resultList){
+                    rv_rawan.adapter = RawanBanjirAdapter(resultList!!){
                         val bundle = Bundle()
                         bundle.putString(CctvMapsActivity.LATPOS, it.latitude.toString())
                         bundle.putString(CctvMapsActivity.LONGPOS, it.longitude.toString())
@@ -126,8 +124,8 @@ class ListRawanActivity : AppCompatActivity() {
         rv_rawan.layoutManager = LinearLayoutManager(this)
         rv_rawan.adapter = DaerahRawanAdapter(listRawan){
             val bundle = Bundle()
-            bundle.putString(CctvMapsActivity.LATPOS, it.latitude)
-            bundle.putString(CctvMapsActivity.LONGPOS, it.longitude)
+            bundle.putString(CctvMapsActivity.LATPOS, it.latitude.toString())
+            bundle.putString(CctvMapsActivity.LONGPOS, it.longitude.toString())
             bundle.putString(CctvMapsActivity.NameCCTV, it.nama)
             startActivity(
                 Intent(this, CctvMapsActivity::class.java).putExtras(bundle)

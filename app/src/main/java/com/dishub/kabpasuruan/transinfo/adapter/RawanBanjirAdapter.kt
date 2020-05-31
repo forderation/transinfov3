@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dishub.kabpasuruan.transinfo.R
-import com.dishub.kabpasuruan.transinfo.model.rawanBanjir.Banjir
+import com.dishub.kabpasuruan.transinfo.model.daerahRawan.Rawan
 
 class RawanBanjirAdapter (
-    private val listRawan : List<Banjir>,
-    private val listener: (Banjir) -> Unit
+    private val listRawan : List<Rawan>,
+    private val listener: (Rawan) -> Unit
 ): RecyclerView.Adapter<RawanBanjirAdapter.RawanHolder>() {
 
     class RawanHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,12 +18,12 @@ class RawanBanjirAdapter (
         private val kec = itemView.findViewById<TextView>(R.id.rw_kec)
         private val desa = itemView.findViewById<TextView>(R.id.rw_desa)
         private val status = itemView.findViewById<TextView>(R.id.rw_status)
-        fun bind(rawan: Banjir,listener: (Banjir) -> Unit) {
+        fun bind(rawan: Rawan,listener: (Rawan) -> Unit) {
             itemView.setOnClickListener {
                 listener(rawan)
             }
             nama.text = rawan.nama
-            kec.text = rawan.kec
+            kec.text = rawan.kecamatan
             desa.text = rawan.desa
             status.text = rawan.status
         }
