@@ -12,7 +12,7 @@ class SplashActivity : AppCompatActivity() {
     companion object{
         const val USER_MESSAGE = "USER_MESSAGE"
     }
-    private val timeOut:Long=3000
+    private val timeOut:Long=2000
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)

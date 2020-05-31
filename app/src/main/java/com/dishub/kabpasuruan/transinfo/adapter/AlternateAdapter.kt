@@ -15,8 +15,6 @@ class AlternateAdapter (
 
     class AlternateHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nama = itemView.findViewById<TextView>(R.id.rw_nama)
-        private val kec = itemView.findViewById<TextView>(R.id.rw_kec)
-        private val desa = itemView.findViewById<TextView>(R.id.rw_desa)
         private val status = itemView.findViewById<TextView>(R.id.rw_status)
         private val info = itemView.findViewById<TextView>(R.id.rw_informasi)
         fun bind(alternate: Alternate, listener: (Alternate) -> Unit) {
@@ -24,8 +22,6 @@ class AlternateAdapter (
                 listener(alternate)
             }
             nama.text = alternate.nama
-            kec.text = alternate.kec
-            desa.text = alternate.desa
             status.text = alternate.status
             val informasi = "Informasi Tambahan: ${alternate.informasi}"
             info.text = informasi

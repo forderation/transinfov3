@@ -32,6 +32,7 @@ class ListRawanActivity : AppCompatActivity() {
         const val alternatif = "ALTERNATE"
         const val TYPERAWAN = "typeRawan"
     }
+
     private lateinit var listRawan: List<Rawan>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +40,7 @@ class ListRawanActivity : AppCompatActivity() {
         setContentView(R.layout.activity_list_rawan)
         val typeRawan = intent.extras?.getString(TYPERAWAN).toString()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        when(typeRawan){
+        when (typeRawan) {
             macet -> {
                 supportActionBar?.title = "Rawan Macet"
                 getMacetList()
@@ -61,8 +62,8 @@ class ListRawanActivity : AppCompatActivity() {
 
     private fun getAlternatif() {
         val retrofit = ApiClient().getApiClient(BuildConfig.BASE_API)
-        val rawanList= retrofit.getJlAlternate()
-        rawanList.enqueue(object: Callback<ListAlternate>{
+        val rawanList = retrofit.getJlAlternate()
+        rawanList.enqueue(object : Callback<ListAlternate> {
             override fun onFailure(call: Call<ListAlternate>, t: Throwable) {
                 Toast.makeText(
                     this@ListRawanActivity,
@@ -72,17 +73,13 @@ class ListRawanActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<ListAlternate>, response: Response<ListAlternate>) {
-                if(response.code()==200){
+                if (response.code() == 200) {
                     val resultList = response.body()?.result as List<Alternate>
                     rv_rawan.layoutManager = LinearLayoutManager(this@ListRawanActivity)
-                    rv_rawan.adapter = AlternateAdapter(resultList){
-                        val bundle = Bundle()
-                        bundle.putString(CctvMapsActivity.LATPOS, it.latitude)
-                        bundle.putString(CctvMapsActivity.LONGPOS, it.longitude)
-                        bundle.putString(CctvMapsActivity.NameCCTV, it.nama)
-                        startActivity(
-                            Intent(this@ListRawanActivity, CctvMapsActivity::class.java).putExtras(bundle)
-                        )
+                    rv_rawan.adapter = AlternateAdapter(resultList) {
+                        val intent = Intent(this@ListRawanActivity, AlternateMapsActivity::class.java);
+                        intent.putExtra(AlternateMapsActivity.ALTERNATE_EXTRA, it)
+                        startActivity(intent)
                     }
                 }
             }
@@ -92,8 +89,8 @@ class ListRawanActivity : AppCompatActivity() {
 
     private fun getRawanBanjir() {
         val retrofit = ApiClient().getApiClient(BuildConfig.BASE_API)
-        val rawanList= retrofit.getRawanBanjir()
-        rawanList.enqueue(object: Callback<ListRawan>{
+        val rawanList = retrofit.getRawanBanjir()
+        rawanList.enqueue(object : Callback<ListRawan> {
             override fun onFailure(call: Call<ListRawan>, t: Throwable) {
                 Toast.makeText(
                     this@ListRawanActivity,
@@ -103,16 +100,18 @@ class ListRawanActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<ListRawan>, response: Response<ListRawan>) {
-                if(response.code() == 200){
+                if (response.code() == 200) {
                     val resultList = response.body()?.result
                     rv_rawan.layoutManager = LinearLayoutManager(this@ListRawanActivity)
-                    rv_rawan.adapter = RawanBanjirAdapter(resultList!!){
+                    rv_rawan.adapter = RawanBanjirAdapter(resultList!!) {
                         val bundle = Bundle()
                         bundle.putString(CctvMapsActivity.LATPOS, it.latitude.toString())
                         bundle.putString(CctvMapsActivity.LONGPOS, it.longitude.toString())
                         bundle.putString(CctvMapsActivity.NameCCTV, it.nama)
                         startActivity(
-                            Intent(this@ListRawanActivity, CctvMapsActivity::class.java).putExtras(bundle)
+                            Intent(this@ListRawanActivity, CctvMapsActivity::class.java).putExtras(
+                                bundle
+                            )
                         )
                     }
                 }
@@ -120,9 +119,9 @@ class ListRawanActivity : AppCompatActivity() {
         })
     }
 
-    private fun buildList(){
+    private fun buildList() {
         rv_rawan.layoutManager = LinearLayoutManager(this)
-        rv_rawan.adapter = DaerahRawanAdapter(listRawan){
+        rv_rawan.adapter = DaerahRawanAdapter(listRawan) {
             val bundle = Bundle()
             bundle.putString(CctvMapsActivity.LATPOS, it.latitude.toString())
             bundle.putString(CctvMapsActivity.LONGPOS, it.longitude.toString())
@@ -147,10 +146,10 @@ class ListRawanActivity : AppCompatActivity() {
         return true
     }
 
-    private fun getLakaList(){
+    private fun getLakaList() {
         val retrofit = ApiClient().getApiClient(SupportUtil.dishubLink)
         val lakaList: Call<ListRawan> = retrofit.getRawanLaka()
-        lakaList.enqueue(object: Callback<ListRawan> {
+        lakaList.enqueue(object : Callback<ListRawan> {
 
             override fun onFailure(call: Call<ListRawan>, t: Throwable) {
                 Toast.makeText(
@@ -164,7 +163,7 @@ class ListRawanActivity : AppCompatActivity() {
                 call: Call<ListRawan>,
                 response: Response<ListRawan>
             ) {
-                if(response.body()?.result != null){
+                if (response.body()?.result != null) {
                     listRawan = response.body()?.result as List<Rawan>
                     buildList()
                 }
@@ -172,10 +171,10 @@ class ListRawanActivity : AppCompatActivity() {
         })
     }
 
-    private fun getMacetList(){
+    private fun getMacetList() {
         val retrofit = ApiClient().getApiClient(SupportUtil.dishubLink)
         val macetList: Call<ListRawan> = retrofit.getRawanMacet()
-        macetList.enqueue(object: Callback<ListRawan> {
+        macetList.enqueue(object : Callback<ListRawan> {
             override fun onFailure(call: Call<ListRawan>, t: Throwable) {
                 Toast.makeText(
                     this@ListRawanActivity,
@@ -188,7 +187,7 @@ class ListRawanActivity : AppCompatActivity() {
                 call: Call<ListRawan>,
                 response: Response<ListRawan>
             ) {
-                if(response.body()?.result != null){
+                if (response.body()?.result != null) {
                     listRawan = response.body()?.result as List<Rawan>
                     buildList()
                 }
