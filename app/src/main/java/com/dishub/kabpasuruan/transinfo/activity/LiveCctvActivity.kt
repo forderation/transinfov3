@@ -2,8 +2,11 @@ package com.dishub.kabpasuruan.transinfo.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,9 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.pedro.vlc.VlcListener
 import com.pedro.vlc.VlcVideoLibrary
 import kotlinx.android.synthetic.main.activity_live_cctv.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,11 +35,29 @@ class LiveCctvActivity : AppCompatActivity() {
     private lateinit var vlcListener: VlcListener
     private lateinit var apiSecret: String
     private lateinit var vlcLib: VlcVideoLibrary
-    private var linkState:String? = null
     private lateinit var snackbar: Snackbar
+    private var currentCctv: CCTVLive? = null
+    private var isSuccessPlay = false
+    private val timer = object: CountDownTimer(4000, 1000) {
+        override fun onFinish() {
+            if(!isSuccessPlay){
+                snackbar.dismiss()
+                Toast.makeText(applicationContext, "Pemutaran CCTV gagal", Toast.LENGTH_SHORT).show()
+                if (vlcLib.isPlaying) {
+                    vlcLib.stop()
+                }
+                player_view.visibility = View.GONE
+                gesture_layout.visibility = View.VISIBLE
+            }
+        }
+
+        override fun onTick(p0: Long) {
+
+        }
+    }
 
     companion object{
-        const val LINK_STATE = "LINK_STATE"
+        const val EXTRA_CCTV = "EXTRA_CCTV"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +74,7 @@ class LiveCctvActivity : AppCompatActivity() {
         vlcListener = object : VlcListener {
             override fun onComplete() {
                 snackbar.dismiss()
+                isSuccessPlay = true
                 Toast.makeText(applicationContext, "Pemutaran berhasil", Toast.LENGTH_SHORT).show()
             }
             override fun onError() {
@@ -66,6 +86,8 @@ class LiveCctvActivity : AppCompatActivity() {
                     vlcLib.setOptions(listOf(":fullscreen"))
                     runOnUiThread {
                         snackbar.dismiss()
+                        player_view.visibility = View.GONE
+                        gesture_layout.visibility = View.VISIBLE
                         Toast.makeText(
                             applicationContext,
                             "Error, load cctv",
@@ -78,11 +100,18 @@ class LiveCctvActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.Main) {
             vlcLib = VlcVideoLibrary(this@LiveCctvActivity, vlcListener, player_view)
             vlcLib.setOptions(listOf(":fullscreen"))
-            val url = savedInstanceState?.getString(LINK_STATE)
+            currentCctv = intent.getSerializableExtra(EXTRA_CCTV) as? CCTVLive
             runOnUiThread {
-                if(url!=null){
-                    linkState = url
-                    vlcLib.play(url)
+                if(currentCctv != null){
+                    snackbar.setText("Sedang memutar : ${currentCctv!!.name}").show()
+                    gesture_layout.visibility = View.GONE
+                    timer.cancel()
+                    vlcLib.play(currentCctv!!.url)
+                    timer.start()
+                    Log.d("cctv_debug","playing cctv success")
+                }else{
+                    gesture_layout.visibility = View.VISIBLE
+                    player_view.visibility = View.GONE
                 }
             }
         }
@@ -101,8 +130,8 @@ class LiveCctvActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if(linkState != null){
-            outState.putString(LINK_STATE, linkState)
+        if(currentCctv != null){
+            intent.putExtra(EXTRA_CCTV, currentCctv)
         }
     }
 
@@ -147,10 +176,11 @@ class LiveCctvActivity : AppCompatActivity() {
                     vlcLib.stop()
                 }
                 runOnUiThread {
-                    ns_scroll.smoothScrollTo(0,0)
-                    snackbar.setText("Sedang memutar : ${it.name}").show()
-                    vlcLib.play(it.url)
-                    linkState = it.url
+                    currentCctv = it
+                    val intent = Intent(this@LiveCctvActivity, LiveCctvActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    intent.putExtra(EXTRA_CCTV, currentCctv)
+                    startActivity(intent)
                 }
             }
         },
