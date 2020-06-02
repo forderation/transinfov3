@@ -1,6 +1,7 @@
 package com.dishub.kabpasuruan.transinfo.activity
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -38,6 +39,8 @@ class LiveCctvActivity : AppCompatActivity() {
     private lateinit var snackbar: Snackbar
     private var currentCctv: CCTVLive? = null
     private var isSuccessPlay = false
+    private var orientation : Int = -1
+
     private val timer = object: CountDownTimer(4000, 1000) {
         override fun onFinish() {
             if(!isSuccessPlay){
@@ -47,7 +50,11 @@ class LiveCctvActivity : AppCompatActivity() {
                     vlcLib.stop()
                 }
                 player_view.visibility = View.GONE
-                gesture_layout.visibility = View.VISIBLE
+                gesture_layout?.visibility = View.VISIBLE
+            }else{
+                if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    Snackbar.make(ns_scroll,"Putar layar ke orientasi potrait untuk memilih CCTV",Snackbar.LENGTH_LONG).show()
+                }
             }
         }
 
@@ -63,14 +70,15 @@ class LiveCctvActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_cctv)
+        orientation = resources.configuration.orientation
+        player_view.visibility = View.VISIBLE
         snackbar = Snackbar.make(ns_scroll,"",Snackbar.LENGTH_INDEFINITE)
         supportActionBar?.title = getString(R.string.cctv_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         service = ApiClient().getApiClient(BuildConfig.BASE_API)
         this.apiKey = BuildConfig.API_KEY
         this.apiSecret = BuildConfig.API_SECRET
-        recyclerView.layoutManager = LinearLayoutManager(this)
         vlcListener = object : VlcListener {
             override fun onComplete() {
                 snackbar.dismiss()
@@ -78,44 +86,33 @@ class LiveCctvActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Pemutaran berhasil", Toast.LENGTH_SHORT).show()
             }
             override fun onError() {
-                GlobalScope.launch(Dispatchers.Main) {
-                    if (vlcLib.isPlaying) {
-                        vlcLib.stop()
-                    }
-                    vlcLib = VlcVideoLibrary(applicationContext, vlcListener, player_view)
-                    vlcLib.setOptions(listOf(":fullscreen"))
-                    runOnUiThread {
-                        snackbar.dismiss()
-                        player_view.visibility = View.GONE
-                        gesture_layout.visibility = View.VISIBLE
-                        Toast.makeText(
-                            applicationContext,
-                            "Error, load cctv",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
+
             }
         }
         GlobalScope.launch(Dispatchers.Main) {
-            vlcLib = VlcVideoLibrary(this@LiveCctvActivity, vlcListener, player_view)
-            vlcLib.setOptions(listOf(":fullscreen"))
+            val createOptions = async {
+                vlcLib = VlcVideoLibrary(this@LiveCctvActivity, vlcListener, player_view)
+            }
             currentCctv = intent.getSerializableExtra(EXTRA_CCTV) as? CCTVLive
-            runOnUiThread {
-                if(currentCctv != null){
-                    snackbar.setText("Sedang memutar : ${currentCctv!!.name}").show()
-                    gesture_layout.visibility = View.GONE
-                    timer.cancel()
-                    vlcLib.play(currentCctv!!.url)
-                    timer.start()
-                    Log.d("cctv_debug","playing cctv success")
-                }else{
-                    gesture_layout.visibility = View.VISIBLE
-                    player_view.visibility = View.GONE
-                }
+            if(currentCctv != null){
+                snackbar.setText("Sedang memutar : ${currentCctv!!.name}").show()
+                gesture_layout?.visibility = View.GONE
+                createOptions.await()
+                timer.cancel()
+                vlcLib.play(currentCctv!!.url)
+                timer.start()
+                Log.d("cctv_debug","playing cctv success")
+            }else{
+                gesture_layout?.visibility = View.VISIBLE
+                player_view.visibility = View.GONE
             }
         }
-        getListCCTV()
+        if(orientation == Configuration.ORIENTATION_PORTRAIT){
+            recyclerView?.layoutManager = LinearLayoutManager(this)
+            getListCCTV()
+        }else{
+            supportActionBar?.hide()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -195,6 +192,6 @@ class LiveCctvActivity : AppCompatActivity() {
                 )
             }
         )
-        recyclerView.adapter = adapter
+        recyclerView?.adapter = adapter
     }
 }
