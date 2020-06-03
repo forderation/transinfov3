@@ -5,5 +5,7 @@
         <domain includeSubdomains="true">36.89.61.19</domain>
         <domain includeSubdomains="true">36.89.61.18</domain>
         <domain includeSubdomains="true">http://36.89.61.18/</domain>
+        <domain includeSubdomains="true">live.dishub.pasuruankab.go.id</domain>
+        <domain includeSubdomains="true">rtmp://live.dishub.pasuruankab.go.id:1935/</domain>
     </domain-config>
 </network-security-config>

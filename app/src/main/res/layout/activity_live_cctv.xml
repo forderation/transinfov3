@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ns_scroll"
     android:layout_width="match_parent"
@@ -21,11 +22,14 @@
             android:text="@string/live_streaming_lalin"
             />
 
-        <SurfaceView
-            android:layout_margin="8dp"
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/player_view"
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
-            android:layout_height="220dp" />
+            android:layout_height="220dp"
+            app:resize_mode="fill"
+            app:surface_type="texture_view"
+            app:use_controller="false" />
 
         <LinearLayout
             android:id="@+id/gesture_layout"
