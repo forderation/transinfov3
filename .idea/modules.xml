@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="transinfo/app" />
+      <module fileurl="file://$PROJECT_DIR$/libvlc/libvlc.iml" filepath="$PROJECT_DIR$/libvlc/libvlc.iml" group="transinfo/libvlc" />
+      <module fileurl="file://$PROJECT_DIR$/pedrovlc/pedrovlc.iml" filepath="$PROJECT_DIR$/pedrovlc/pedrovlc.iml" group="transinfo/pedrovlc" />
       <module fileurl="file://$PROJECT_DIR$/transinfo.iml" filepath="$PROJECT_DIR$/transinfo.iml" group="transinfo" />
     </modules>
   </component>

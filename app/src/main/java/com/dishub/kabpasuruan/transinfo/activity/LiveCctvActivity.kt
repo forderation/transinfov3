@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -24,9 +25,11 @@ import com.pedro.vlc.VlcListener
 import com.pedro.vlc.VlcVideoLibrary
 import kotlinx.android.synthetic.main.activity_live_cctv.*
 import kotlinx.coroutines.*
+import org.videolan.libvlc.MediaPlayer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.collections.ArrayList
 
 
 class LiveCctvActivity : AppCompatActivity() {
@@ -39,21 +42,23 @@ class LiveCctvActivity : AppCompatActivity() {
     private lateinit var snackbar: Snackbar
     private var currentCctv: CCTVLive? = null
     private var isSuccessPlay = false
-    private var orientation : Int = -1
+    private var orientation: Int = -1
 
-    private val timer = object: CountDownTimer(4000, 1000) {
+    private val timer = object : CountDownTimer(6000, 1000) {
         override fun onFinish() {
-            if(!isSuccessPlay){
+            if (!isSuccessPlay) {
                 snackbar.dismiss()
-                Toast.makeText(applicationContext, "Pemutaran CCTV gagal", Toast.LENGTH_SHORT).show()
-                if (vlcLib.isPlaying) {
-                    vlcLib.stop()
-                }
+                Toast.makeText(applicationContext, "Pemutaran CCTV gagal", Toast.LENGTH_SHORT)
+                    .show()
                 player_view.visibility = View.GONE
                 gesture_layout?.visibility = View.VISIBLE
-            }else{
-                if(orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    Snackbar.make(ns_scroll,"Putar layar ke orientasi potrait untuk memilih CCTV",Snackbar.LENGTH_LONG).show()
+            } else {
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    Snackbar.make(
+                        ns_scroll,
+                        "Putar layar ke orientasi potrait untuk memilih CCTV",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -63,7 +68,7 @@ class LiveCctvActivity : AppCompatActivity() {
         }
     }
 
-    companion object{
+    companion object {
         const val EXTRA_CCTV = "EXTRA_CCTV"
     }
 
@@ -72,7 +77,7 @@ class LiveCctvActivity : AppCompatActivity() {
         setContentView(R.layout.activity_live_cctv)
         orientation = resources.configuration.orientation
         player_view.visibility = View.VISIBLE
-        snackbar = Snackbar.make(ns_scroll,"",Snackbar.LENGTH_INDEFINITE)
+        snackbar = Snackbar.make(ns_scroll, "", Snackbar.LENGTH_INDEFINITE)
         supportActionBar?.title = getString(R.string.cctv_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -85,6 +90,11 @@ class LiveCctvActivity : AppCompatActivity() {
                 isSuccessPlay = true
                 Toast.makeText(applicationContext, "Pemutaran berhasil", Toast.LENGTH_SHORT).show()
             }
+
+            override fun onBuffering(event: MediaPlayer.Event?) {
+
+            }
+
             override fun onError() {
 
             }
@@ -94,23 +104,23 @@ class LiveCctvActivity : AppCompatActivity() {
                 vlcLib = VlcVideoLibrary(this@LiveCctvActivity, vlcListener, player_view)
             }
             currentCctv = intent.getSerializableExtra(EXTRA_CCTV) as? CCTVLive
-            if(currentCctv != null){
+            if (currentCctv != null) {
                 snackbar.setText("Sedang memutar : ${currentCctv!!.name}").show()
                 gesture_layout?.visibility = View.GONE
                 createOptions.await()
                 timer.cancel()
                 vlcLib.play(currentCctv!!.url)
                 timer.start()
-                Log.d("cctv_debug","playing cctv success")
-            }else{
+                Log.d("cctv_debug", "playing cctv success")
+            } else {
                 gesture_layout?.visibility = View.VISIBLE
                 player_view.visibility = View.GONE
             }
         }
-        if(orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerView?.layoutManager = LinearLayoutManager(this)
             getListCCTV()
-        }else{
+        } else {
             supportActionBar?.hide()
         }
     }
@@ -127,7 +137,7 @@ class LiveCctvActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if(currentCctv != null){
+        if (currentCctv != null) {
             intent.putExtra(EXTRA_CCTV, currentCctv)
         }
     }
@@ -169,9 +179,6 @@ class LiveCctvActivity : AppCompatActivity() {
         val adapter = CCTVListAdapter(listCCTV, {
             //change CCTV player
             GlobalScope.launch(Dispatchers.Main) {
-                if (vlcLib.isPlaying) {
-                    vlcLib.stop()
-                }
                 runOnUiThread {
                     currentCctv = it
                     val intent = Intent(this@LiveCctvActivity, LiveCctvActivity::class.java)
