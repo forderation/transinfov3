@@ -131,14 +131,15 @@ public class VlcVideoLibrary implements MediaPlayer.EventListener {
 //    media.clearSlaves();
 //    media.addOption(":network-caching=" + Constants.BUFFER);
 //    media.addOption(":file-caching=" + Constants.BUFFER);
-    media.setHWDecoderEnabled(true, false);
-    media.addOption(":network-caching=100");
-    media.addOption(":clock-jitter=0");
-    media.addOption(":clock-synchro=0");
-    media.addOption(":fullscreen");
+    media.setHWDecoderEnabled(true, true);
+    media.addOption("--network-caching=100");
+    media.addOption("--clock-jitter=0");
+    media.addOption("--no-sout-smem-time-sync");
+    media.addOption("-vv");
+    media.addOption("--fullscreen");
+    media.addOption("--no-drop-late-frames");
     player = new MediaPlayer(vlcInstance);
     player.setMedia(media);
-    player.setAspectRatio("16:9");
     player.setEventListener(this);
     IVLCVout vlcOut = player.getVLCVout();
     //set correct class for render depend of constructor called
@@ -157,7 +158,6 @@ public class VlcVideoLibrary implements MediaPlayer.EventListener {
 //    } else {
 //      throw new RuntimeException("You cant set a null render object");
 //    }
-    vlcOut.setWindowSize(surfaceView.getMeasuredWidth(),surfaceView.getMeasuredHeight());
     vlcOut.setVideoView(surfaceView);
     vlcOut.attachViews();
     player.play();

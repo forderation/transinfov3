@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -30,7 +29,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.collections.ArrayList
-
 
 class LiveCctvActivity : AppCompatActivity() {
     private lateinit var listCCTV: ArrayList<CCTVLive>
@@ -109,6 +107,7 @@ class LiveCctvActivity : AppCompatActivity() {
                 gesture_layout?.visibility = View.GONE
                 createOptions.await()
                 timer.cancel()
+                vlcLib.stop()
                 vlcLib.play(currentCctv!!.url)
                 timer.start()
                 Log.d("cctv_debug", "playing cctv success")
