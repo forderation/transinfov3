@@ -142,6 +142,7 @@ public class VlcVideoLibrary implements MediaPlayer.EventListener {
     player.setMedia(media);
     player.setEventListener(this);
     IVLCVout vlcOut = player.getVLCVout();
+    vlcOut.setWindowSize(surfaceView.getWidth(), surfaceView.getHeight());
     //set correct class for render depend of constructor called
 //    if (surfaceView != null) {
 //      vlcOut.setVideoView(surfaceView);
